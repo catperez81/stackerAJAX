@@ -85,10 +85,10 @@ var getInspiration = function(tags) {
 	
 	// the parameters we need to pass in our request to StackOverflow's API
 	var request = { 
-		tagged: tags,
-		site: 'stackoverflow',
-		order: 'desc',
-		sort: 'creation'
+		items: [],
+		has_more: false,
+		quote_max: 10000,
+		quota_remaining: 9984
 	};
 	
 	$.ajax({
@@ -115,7 +115,6 @@ var getInspiration = function(tags) {
 };
 
 
-
 $(document).ready( function() {
 	$('.unanswered-getter').submit( function(e){
 		e.preventDefault();
@@ -133,7 +132,8 @@ $(document).ready( function() {
 		// zero out results if previous search has run
 		$('.results').html('');
 		// get the value of the tags the user submitted
-		var tags = $(this).find("input[name='tags']").val('');
-		getInspiration(tags);
+		var items = $(this).find("input[name='items']").val('');
+		getInspiration(items);
 	});
 });
+ 
