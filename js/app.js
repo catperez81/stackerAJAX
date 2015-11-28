@@ -82,36 +82,38 @@ var getUnanswered = function(tags) {
 };
 
 var getInspiration = function(tags) {
+
+	// alert('test');
 	
 	// the parameters we need to pass in our request to StackOverflow's API
 	var request = { 
-		items: [],
-		has_more: false,
-		quote_max: 10000,
-		quota_remaining: 9984
+		tag: tags
 	};
 	
-	$.ajax({
-		url: "/2.2/tags/{tag}/top-answerers/all_time?site=stackoverflow",
-		data: request,
-		dataType: "jsonp",//use jsonp to avoid cross origin issues
+	var result = $.ajax({
+		// url: "/2.2/tags/{tag}/top-answerers/all_time?site=stackoverflow",
+		url: "http://api.stackexchange.com/2.2/tags/" + request.tag + "/top-answerers/all_time?site=stackoverflow",
+		dataType: "jsonp", //use jsonp to avoid cross origin issues
 		type: "GET",
 	})
 	.done(function(result){ //this waits for the ajax to return with a succesful promise object
-		var searchResults = showSearchResults(request.tagged, result.items.length);
+		console.log(result);
+
+		var searchResults = showSearchResults(request.tag, result.items.length);
 
 		$('.search-results').html(searchResults);
 		//$.each is a higher order function. It takes an array and a function as an argument.
 		//The function is executed once for each item in the array.
 		$.each(result.items, function(i, item) {
-			var question = showQuestion(item);
-			$('.results').append(question);
+			console.log(item);
+			// var answerer = showAnswerer(item);
+			// $('.results').append(answerer);
 		});
-	})
-	.fail(function(jqXHR, error){ //this waits for the ajax to return with an error promise object
-		var errorElem = showError(error);
-		$('.search-results').append(errorElem);
 	});
+	// .fail(function(jqXHR, error){ //this waits for the ajax to return with an error promise object
+	// 	var errorElem = showError(error);
+	// 	$('.search-results').append(errorElem);
+	// });
 };
 
 
@@ -132,7 +134,7 @@ $(document).ready( function() {
 		// zero out results if previous search has run
 		$('.results').html('');
 		// get the value of the tags the user submitted
-		var items = $(this).find("input[name='items']").val('');
+		var items = $(this).find("input[name='top-answerers']").val();
 		getInspiration(items);
 	});
 });
